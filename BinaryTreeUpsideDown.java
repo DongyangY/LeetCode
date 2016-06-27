@@ -8,18 +8,17 @@
  * }
  */
 public class Solution {
-    private TreeNode nr;
     
     public TreeNode upsideDownBinaryTree(TreeNode root) {
-        return upsideDownBinaryTree(root, null);
-    }
-    
-    public TreeNode upsideDownBinaryTree(TreeNode p, TreeNode parent) {
-        if (p == null) return parent;
-        TreeNode root = upsideDownBinaryTree(p.left, p);
-        // For the original root's parent == null
-        p.left = parent == null ? null : parent.right;
-        p.right = parent;
-        return root;
+        TreeNode node = root, parent = null, right = null;  
+        while (node != null) {  
+            TreeNode left = node.left;  
+            node.left = right;  
+            right = node.right;  
+            node.right = parent;  
+            parent = node;  
+            node = left;  
+        }  
+        return parent;
     }
 }

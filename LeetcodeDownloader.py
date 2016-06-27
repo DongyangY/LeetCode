@@ -10,9 +10,11 @@
 # Features:
 #It will download only your latest accepted submission for particular code.
 
-import cookielib, urllib2, re, sys, HTMLParser, os.path
+import cookielib, urllib2, re, sys, HTMLParser, os.path, ssl
 
-PHPSESSID = "o7b9o3r2dfl2agbqudc7n04y9t1iqma7"
+ssl._create_default_https_context = ssl._create_unverified_context
+
+PHPSESSID = "9crnldeno4w0kicmwxnh7auhsd3jvqp0"
 
 def saveFileByType(code_content, parser, languages=[], postfixes=[]):
   for index, language in enumerate(languages):

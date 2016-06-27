@@ -2,12 +2,7 @@
       int read4(char[] buf); */
 
 public class Solution extends Reader4 {
-    
-    char[] buffer = new char[4];
-    
-    int bufsize;
-    
-    int offset;
+    Queue<Character> queue = new LinkedList<>();
     
     /**
      * @param buf Destination buffer
@@ -15,20 +10,27 @@ public class Solution extends Reader4 {
      * @return    The number of characters read
      */
     public int read(char[] buf, int n) {
-        int nBytes = 0;
-        boolean eof = false;
-        
-        while (nBytes < n && !eof) {
-            if (bufsize == 0) {
-                bufsize = read4(buffer);
-                eof = bufsize < 4;
+        if (queue.size() >= n) {
+            for (int i = 0; i < n; i++) {
+                buf[i] = queue.remove();
             }
-            int readBytes = Math.min(bufsize, n - nBytes);
-            System.arraycopy(buffer, offset, buf, nBytes, readBytes);
-            nBytes += readBytes;
-            offset = (offset + readBytes) % 4;
-            bufsize -= readBytes;
+            return n;
+        } else {
+            while (queue.size() < n) {
+                char[] buffer = new char[4];
+                int num = read4(buffer);
+                for (int i = 0; i < num; i++) {
+                    queue.add(buffer[i]);
+                }
+                if (num < 4) {
+                    int nByte = 0;
+                    while (!queue.isEmpty() && nByte < n) {
+                        buf[nByte++] = queue.remove();
+                    }
+                    return nByte;
+                }
+            }
+            return read(buf, n);
         }
-        return nBytes;
     }
 }

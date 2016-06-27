@@ -4,49 +4,45 @@ public class Solution {
         
         s = s.replaceAll(" ", "");
         char[] chars = s.toCharArray();
-        Stack<String> stack = new Stack<>();
-        StringBuilder sb = new StringBuilder();
+        Stack<Integer> value = new Stack<>();
+        Stack<Character> ops = new Stack<>();
         
         for (int k = 0; k < chars.length; k++) {
-            char c = chars[k];
-            if (c >= '0' && c <= '9') {
-                sb.append(c);
-            } else {
-                if (sb.length() > 0) {
-                    stack.push(sb.toString());
-                    sb = new StringBuilder();
+            if (chars[k] >= '0' && chars[k] <= '9') {
+                StringBuilder sb = new StringBuilder();
+                while (k < chars.length && chars[k] >= '0' && chars[k] <= '9') {
+                    sb.append(chars[k]);   
+                    k++;
                 }
-                if (c != ')') {
-                    stack.push(String.valueOf(c));
-                } else {
-                    ArrayList<String> inner = new ArrayList<>();
-                    String top = stack.pop();
-                    while (!top.equals("(")) {
-                        inner.add(top);
-                        top = stack.pop();
+                value.add(Integer.parseInt(sb.toString()));
+                k--;
+            } else {
+                if (chars[k] == '(') {
+                    ops.push(chars[k]);
+                } else if (chars[k] != ')') {
+                    while (!ops.isEmpty() && ops.peek() != '(') {
+                        value.push(calculate(value.pop(), value.pop(), ops.pop()));
                     }
-                    stack.push(String.valueOf(sum(inner)));
+                    ops.push(chars[k]);
+                } else {
+                    while (ops.peek() != '(') {
+                        value.push(calculate(value.pop(), value.pop(), ops.pop()));
+                    }
+                    ops.pop();
                 }
             }
         }
-        if (sb.length() > 0) stack.push(sb.toString());
-        
-        ArrayList<String> inner = new ArrayList<>();
-        while (!stack.isEmpty()) {
-            inner.add(stack.pop());
+        while (!ops.isEmpty()) {
+            value.push(calculate(value.pop(), value.pop(), ops.pop()));
         }
-        return sum(inner);
+        return value.pop();
     }
     
-    private int sum(ArrayList<String> eq) {
-        int sum = 0;
-        for (int i = 0; i < eq.size() - 1; i += 2) {
-            int value = Integer.valueOf(eq.get(i));
-            sum += eq.get(i + 1).equals("-") ? -value : value;
+    private int calculate(int v1, int v2, char op) {
+        if (op == '+') {
+            return v1 + v2;
+        } else {
+            return v2 - v1;
         }
-        String last = eq.get(eq.size() - 1);
-        if (!last.equals("-") && !last.equals("+"))
-            sum += Integer.valueOf(eq.get(eq.size() - 1));
-        return sum;
     }
 }

@@ -8,13 +8,21 @@ public class Solution extends Reader4 {
      * @return    The number of characters read
      */
     public int read(char[] buf, int n) {
-        char[] buffer = new char[4];
-        int nBytes = 0, readBytes = Integer.MAX_VALUE;
-        while (nBytes < n && (readBytes = read4(buffer)) > 0) {
-            readBytes = Math.min(readBytes, n - nBytes);
-            System.arraycopy(buffer, 0, buf, nBytes, readBytes);
-            nBytes += readBytes;
+        if (n == 4) {
+            return read4(buf);
+        } else if (n < 4){
+            int num = read4(buf);
+            return Math.min(num, n);
+        } else {
+            char[] buffer = new char[4];
+            int nByte = 0;
+            while (nByte < n) {
+                int num = read4(buffer);
+                System.arraycopy(buffer, 0, buf, nByte, num);
+                nByte += num;
+                if (num < 4) break;
+            }
+            return Math.min(nByte, n);
         }
-        return nBytes;
     }
 }

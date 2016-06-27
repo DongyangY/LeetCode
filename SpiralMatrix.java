@@ -1,29 +1,45 @@
 public class Solution {
     public List<Integer> spiralOrder(int[][] matrix) {
-        List<Integer> elements = new ArrayList<>();
-        if (matrix.length == 0) return elements;
-        int m = matrix.length, n = matrix[0].length;
-        int row = 0, col = -1;
+        List<Integer> result = new ArrayList<>();
         
-        while (true) {
-            for (int i = 0; i < n; i++) {
-                elements.add(matrix[row][++col]);
-            }
-            if (--m == 0) break;
-            for (int i = 0; i < m; i++) {
-                elements.add(matrix[++row][col]);
-            }
-            if (--n == 0) break;
-            for (int i = 0; i < n; i++) {
-                elements.add(matrix[row][--col]);
-            }
-            if (--m == 0) break;
-            for (int i = 0; i < m; i++) {
-                elements.add(matrix[--row][col]);
-            }
-            if (--n == 0) break;
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return result;
         }
         
-        return elements;
+        int top = 0, bottom = matrix.length - 1;
+        int left = 0, right = matrix[0].length - 1;
+        int row = 0, col = 0;
+        
+        while (true) {
+            for (col = left; col <= right; col++) {
+                result.add(matrix[row][col]);
+            }
+            col--;
+            top++;
+            if (top > bottom) break;
+            
+            for (row = top; row <= bottom; row++) {
+                result.add(matrix[row][col]);
+            }
+            row--;
+            right--;
+            if (right < left) break;
+        
+            for (col = right; col >= left; col--) {
+                result.add(matrix[row][col]);
+            }
+            col++;
+            bottom--;
+            if (top > bottom) break;
+        
+            for (row = bottom; row >= top; row--) {
+                result.add(matrix[row][col]);
+            }
+            row++;
+            left++; 
+            if (right < left) break;
+        }
+        
+        return result;
     }
 }
