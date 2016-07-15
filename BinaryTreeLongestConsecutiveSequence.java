@@ -12,10 +12,18 @@ public class Solution {
         return longestConsecutive(root, null, 0);
     }
     
-    private int longestConsecutive(TreeNode n, TreeNode p, int len) {
-        if (n == null) return len;
-        len = (p != null && n.val == p.val + 1) ? len + 1 : 1;
-        return Math.max(len, Math.max(longestConsecutive(n.left, n, len), 
-            longestConsecutive(n.right, n, len)));
+    public int longestConsecutive(TreeNode cur, TreeNode p, int len) {
+        if (cur == null) return len;
+        
+        if (p != null && cur.val == p.val + 1) {
+            len++;
+        } else {
+            len = 1;
+        }
+        
+        int left = longestConsecutive(cur.left, cur, len);
+        int right = longestConsecutive(cur.right, cur, len);
+        
+        return Math.max(len, Math.max(left, right));
     }
 }

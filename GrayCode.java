@@ -1,13 +1,9 @@
 public class Solution {
     public List<Integer> grayCode(int n) {
-        List<Integer> codes = new ArrayList<>();
-        codes.add(0);
-        for (int i = 1; i <= n; i++) {
-            int shift = 1 << (i - 1);
-            for (int j = codes.size() - 1; j >= 0; j--) {
-                codes.add(codes.get(j) + shift);
-            }
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < Math.pow(2, n); i++) {
+            list.add(i ^ (i >> 1));
         }
-        return codes;
+        return list;
     }
 }
