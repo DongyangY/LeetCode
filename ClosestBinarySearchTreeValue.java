@@ -9,18 +9,22 @@
  */
 public class Solution {
     public int closestValue(TreeNode root, double target) {
-        TreeNode closest = root, n = root;
-        double distance = Double.MAX_VALUE;
-        while (n != null) {
-            double d = Math.abs(target - n.val);
-            if (d < distance) {
-                distance = d;
-                closest = n;
-            }
-            if (n.val == target) return n.val;
-            else if (n.val < target) n = n.right;
-            else n = n.left;
+        if (root == null) return -1;
+        return (int)closestValueHelper(root, target);
+    }
+    
+    private double closestValueHelper(TreeNode root, double target) {
+        double val = (double)root.val;
+        if (val == target) {
+            return val;
+        } else if (val > target) {
+            if (root.left == null) return val;
+            double left = closestValueHelper(root.left, target);
+            return Math.abs(left - target) < Math.abs(val - target) ? left : val;
+        } else {
+            if (root.right == null) return val;
+            double right = closestValueHelper(root.right, target);
+            return Math.abs(right - target) < Math.abs(val - target) ? right : val;
         }
-        return closest.val;
     }
 }

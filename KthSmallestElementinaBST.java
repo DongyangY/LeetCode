@@ -8,26 +8,29 @@
  * }
  */
 public class Solution {
-    class MutableInt {
-        int val;
-        public MutableInt(int val) {
-            this.val = val;
-        }
+    private Map<TreeNode, Integer> map = new HashMap<>();
+    
+    private int getSize(TreeNode root) {
+        if (root == null) return 0;
+        int left = getSize(root.left);
+        int right = getSize(root.right);
+        int size = left + right + 1;
+        map.put(root, size);
+        return size;
     }
     
     public int kthSmallest(TreeNode root, int k) {
-        return kthSmallest(root, k, new MutableInt(0)).val;
+        getSize(root);
+        return getKth(root, k).val;
     }
     
-    public TreeNode kthSmallest(TreeNode node, int k, MutableInt i) {
-        if (node == null) return node;
-        TreeNode left = kthSmallest(node.left, k, i);
-        if (left != null) return left;
-        
-        i.val++;
-        if (i.val == k) return node;
-        
-        TreeNode right = kthSmallest(node.right, k, i);
-        return right;
+    private TreeNode getKth(TreeNode root, int k) {
+        int left = root.left == null ? 0 : map.get(root.left);
+        if (left + 1 == k) return root;
+        else if (left + 1 > k) {
+            return getKth(root.left, k);
+        } else {
+            return getKth(root.right, k - left - 1);    
+        }
     }
 }

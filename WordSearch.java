@@ -1,29 +1,34 @@
 public class Solution {
     public boolean exist(char[][] board, String word) {
+        if (board == null || board.length == 0 || board[0].length == 0) {
+            return false;
+        }
+        
         int m = board.length, n = board[0].length;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (exist(board, word, m, n, i, j, 0)) 
-                    return true;
+                if (dfs(board, word, 0, i, j)) return true;
             }
         }
+        
         return false;
     }
     
-    public boolean exist(char[][] board, String word, int m, int n, int i, int j, int cur) {
-        if (i < 0 || i >= m || j < 0 || j >= n || board[i][j] != word.charAt(cur)) 
-            return false;
-        if (cur == word.length() - 1)  return true;
-        else {
-            char temp = board[i][j];
-            board[i][j] = '#';
-            // Note must pass + 1 - not ++ which will change the value in this stage
-            boolean res = exist(board, word, m, n, i + 1, j, cur + 1) || 
-                   exist(board, word, m, n, i - 1, j, cur + 1) ||
-                   exist(board, word, m, n, i, j + 1, cur + 1) ||
-                   exist(board, word, m, n, i, j - 1, cur + 1);
-            board[i][j] = temp;
-            return res;
-        }
+    private boolean dfs(char[][] board, String word, int start, int i, int j) {
+        if (start == word.length()) return true;
+        
+        int m = board.length, n = board[0].length;
+        if (i < 0 || i >= m || j < 0 || j >= n) return false;
+        if (board[i][j] == '-') return false;
+        if (board[i][j] != word.charAt(start)) return false;
+        
+        char temp = board[i][j];
+        board[i][j] = '-';
+        
+        boolean result = dfs(board, word, start + 1, i - 1, j) || dfs(board, word, start + 1, i + 1, j) ||
+            dfs(board, word, start + 1, i, j - 1) || dfs(board, word, start + 1, i, j + 1);
+            
+        board[i][j] = temp;
+        return result;
     }
 }

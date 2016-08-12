@@ -8,13 +8,13 @@
  */
 public class Solution {
     public ListNode reverseList(ListNode head) {
-        ListNode prev = null, curr = head;
-        while (curr != null) {
-            ListNode nextTemp = curr.next;
-            curr.next = prev;
-            prev = curr;
-            curr = nextTemp;
+        ListNode p1 = null, p2 = head;
+        while (p2 != null) {
+            ListNode t = p2.next;
+            p2.next = p1;
+            p1 = p2;
+            p2 = t;
         }
-        return prev;
+        return p1;
     }
 }

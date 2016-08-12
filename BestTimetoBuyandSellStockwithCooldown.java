@@ -1,21 +1,22 @@
 public class Solution {
     public int maxProfit(int[] prices) {
-        if (prices == null || prices.length <= 1)
+        if (prices == null || prices.length < 2)
             return 0;
             
         int n = prices.length;
-        int[] buy = new int[n];
-        int[] sell = new int[n];
-        int[] rest = new int[n];
+        int[] hold = new int[n];
+        int[] nothold = new int[n];
         
-        buy[0] = -prices[0];
+        hold[0] = -prices[0];
+        hold[1] = Math.max(hold[0], -prices[1]);
+        nothold[0] = 0;
+        nothold[1] = Math.max(nothold[0], hold[0] + prices[1]);
         
-        for (int i = 1; i < n; i++) {
-            buy[i] = Math.max(rest[i - 1] - prices[i], buy[i - 1]);
-            sell[i] = Math.max(buy[i - 1] + prices[i], sell[i - 1]);
-            rest[i] = Math.max(sell[i - 1], Math.max(buy[i - 1], rest[i - 1]));
+        for (int i = 2; i < n; i++) {
+            hold[i] = Math.max(hold[i - 1], nothold[i - 2] - prices[i]);
+            nothold[i] = Math.max(nothold[i - 1], hold[i - 1] + prices[i]);
         }
         
-        return sell[n - 1];
+        return nothold[n - 1];
     }
 }

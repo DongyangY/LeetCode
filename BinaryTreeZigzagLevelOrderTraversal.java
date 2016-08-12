@@ -10,30 +10,29 @@
 public class Solution {
     public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
         List<List<Integer>> res = new ArrayList<>();
-        List<Integer> tmp = new ArrayList<>();
-        Stack<TreeNode> current = new Stack<>();
-        Stack<TreeNode> next = new Stack<>();
-        boolean isLeftToRight = true;
-        if (root != null) current.push(root);
+        if (root == null) return res;
+        Queue<TreeNode> q1 = new LinkedList<>();
+        Queue<TreeNode> q2 = new LinkedList<>();
+        LinkedList<Integer> l = new LinkedList<>();
+        int i = 0;
+        q1.add(root);
         
-        while (!current.isEmpty()) {
-            TreeNode n = current.pop();
-            tmp.add(n.val);
-            
-            if (isLeftToRight) {
-                if (n.left != null) next.push(n.left);
-                if (n.right != null) next.push(n.right);
+        while (!q1.isEmpty()) {
+            TreeNode top = q1.remove();
+            if (top.left != null) q2.add(top.left);
+            if (top.right != null) q2.add(top.right);
+            if (i % 2 == 0) {
+                l.addLast(top.val);
             } else {
-                if (n.right != null) next.push(n.right);
-                if (n.left != null) next.push(n.left);
+                l.addFirst(top.val);
             }
-            
-            if (current.isEmpty()) {
-                res.add(tmp);
-                tmp = new ArrayList<Integer>();
-                current = next;
-                next = new Stack<>();
-                isLeftToRight = !isLeftToRight;
+            if (q1.isEmpty()) {
+                Queue<TreeNode> q = q1;
+                q1 = q2;
+                q2 = q;
+                res.add(l);
+                l = new LinkedList<Integer>();
+                i = (i + 1) % 2;
             }
         }
         

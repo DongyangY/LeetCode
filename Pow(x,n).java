@@ -1,20 +1,16 @@
 public class Solution {
-    // x^n = x^(n/2) * x^(n/2) * x^(n%2)
     public double myPow(double x, int n) {
-        if (n < 0) {
-            return 1 / pow(x, -n);
-        } else {
-            return pow(x, n);
-        }
+        if (n == 0 || x == 1) return 1;
+        return n > 0 ? pow(x, n) : 1 / pow(x, (long)n * -1);
     }
     
-    public double pow(double x, int n) {
-        if (n == 0) return 1;
-        double half = pow(x, n / 2);
+    private double pow(double x, long n) {
+        if (n == 1) return x;
+        double h = pow(x, n / 2);
         if (n % 2 == 0) {
-            return half * half;
+            return h * h;
         } else {
-            return half * half * x;
+            return h * h * x;
         }
     }
 }

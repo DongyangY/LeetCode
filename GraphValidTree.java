@@ -29,8 +29,10 @@ public class Solution {
         visited[n] = true;
         List<Integer> l = map.get(n);
         for (Integer i : l) {
-            if (i != p && !validTree(i, n, map, visited)) {
-                return false;
+            if (!visited[i]) {
+                if (!validTree(i, n, map, visited)) return false;
+            } else {
+                if (i != p) return false;
             }
         }
         return true;

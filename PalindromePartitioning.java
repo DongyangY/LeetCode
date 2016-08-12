@@ -1,41 +1,35 @@
 public class Solution {
     public List<List<String>> partition(String s) {
-        List<List<String>> sets = new ArrayList<>();
-        List<String> tmp = new ArrayList<>();
-        partition(s, 0, tmp, sets);
-        return sets;
+        List<List<String>> res = new ArrayList<>();
+        List<String> t = new ArrayList<>();
+        partition(s, 0, t, res);
+        return res;
     }
     
-    public void partition(String s, int start, List<String> tmp, 
-        List<List<String>> sets) {
-        if (start >= s.length()) {
-            /*
-            for (String str : tmp) {
-                System.out.print(str);
-                System.out.print(",");
+    private boolean isPalin(String s) {
+        int i = 0, j = s.length() - 1;
+        while (i < j) {
+            if (s.charAt(i) != s.charAt(j)) {
+                return false;
             }
-            System.out.println();
-            */
-            sets.add(new ArrayList<String>(tmp));
-            return;
+            i++;
+            j--;
+        }
+        return true;
+    }
+    
+    private void partition(String s, int start, List<String> t, List<List<String>> res) {
+        if (start == s.length()) {
+            res.add(new ArrayList<>(t));
         }
         
         for (int i = start + 1; i <= s.length(); i++) {
             String sub = s.substring(start, i);
-            if (isPalindrome(sub)) {
-                tmp.add(sub);
-                partition(s, i, tmp, sets);
-                tmp.remove(tmp.size() - 1);
+            if (isPalin(sub)) {
+                t.add(sub);
+                partition(s, i, t, res);
+                t.remove(t.size() - 1);
             }
         }
-    }
-    
-    public boolean isPalindrome(String s) {
-        int l = 0, r = s.length() - 1;
-        while (l <= r) {
-            if (s.charAt(l++) != s.charAt(r--))
-                return false;
-        }
-        return true;
     }
 }

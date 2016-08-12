@@ -1,25 +1,17 @@
-/*
-          |    
-    |     |
-    |   | | |
-    | | | | |
-    ---------------
-    
-    (i - j) * Min(ai, aj)
-*/
-
-
 public class Solution {
     public int maxArea(int[] height) {
-        int lo = 0, hi = height.length - 1;
-        int maxArea = 0;
-        
-        while (lo < hi) {
-            maxArea = Math.max(maxArea, Math.min(height[lo], height[hi]) * (hi - lo));
-            if (height[lo] >= height[hi]) hi--;
-            else lo++;
+        int max = 0;
+        int i = 0, j = height.length - 1;
+        while (i < j) {
+            max = Math.max(max, (j - i) * Math.min(height[i], height[j]));
+            if (height[i] < height[j]) {
+                i++;
+            } else if (height[i] > height[j]) {
+                j--;
+            } else {
+                i++;
+            }
         }
-        
-        return maxArea;
+        return max;
     }
 }

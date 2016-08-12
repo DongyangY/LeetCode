@@ -1,18 +1,17 @@
 public class Solution {
     public int shortestDistance(int[][] grid) {
-        if (grid == null || grid.length == 0 || grid[0].length == 0) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0)
             return -1;
-        }
+        
+        int min = Integer.MAX_VALUE;
         
         int m = grid.length;
         int n = grid[0].length;
-        int min = Integer.MAX_VALUE;
-        
-        int count = 0;
+        int num = 0;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (grid[i][j] == 1) {
-                    count++;
+                    num++;
                 }
             }
         }
@@ -20,8 +19,7 @@ public class Solution {
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (grid[i][j] == 0) {
-                    int len = bfs(grid, i, j, count);
-                    min = Math.min(min, len);
+                    min = Math.min(min, bfs(grid, i, j, num));
                 }
             }
         }
@@ -29,67 +27,79 @@ public class Solution {
         return min == Integer.MAX_VALUE ? -1 : min;
     }
     
-    class Step {
-        int pos;
-        int dis;
-        public Step(int pos, int dis) {
-            this.pos = pos;
-            this.dis = dis;
-        }
-    }
-    
-    private int bfs(int[][] grid, int si, int sj, int count) {
-        int len = 0;
+    private int bfs(int[][] grid, int i, int j, int num) {
         int m = grid.length;
         int n = grid[0].length;
-        boolean[] visited = new boolean[m * n];
-        Queue<Step> queue = new LinkedList<>();
-        int pos = si * n + sj;
-        queue.add(new Step(pos, 0));
-        visited[pos] = true;
-        int cnt = 0;
+        
+        int[] map = new int[m * n];
+        for (int k = 0; k < map.length; k++) {
+            map[k] = -1;
+        }
+        
+        Queue<Integer> queue = new LinkedList<>();
+        
+        int sum = 0;
+        int count = 0;
+        
+        map[i * n + j] = 0;
+        queue.add(i * n + j);
         
         while (!queue.isEmpty()) {
-            Step top = queue.remove();
+            int top = queue.remove();
+            int dis = map[top] + 1;
             
-            int i = top.pos / n;
-            int j = top.pos % n;
+            int ti = top / n;
+            int tj = top % n;
             
-            if (grid[i][j] == 1) {
-                len += top.dis;
-                cnt++;
-                continue;
+            int up = (ti - 1) * n + tj;
+            if (ti - 1 >= 0 && map[up] == -1 && grid[ti - 1][tj] != 2) {
+                map[up] = dis;
+                if (grid[ti - 1][tj] == 0) {
+                    queue.add(up);
+                }
+                if (grid[ti - 1][tj] == 1) {
+                    sum += dis;
+                    count++;
+                }
             }
             
-            pos = (i - 1) * n + j;
-            if (i - 1 >= 0 && grid[i - 1][j] != 2 && !visited[pos]) {
-                visited[pos] = true;
-                queue.add(new Step(pos, top.dis + 1));
+            int down = (ti + 1) * n + tj;
+            if (ti + 1 < m && map[down] == -1 && grid[ti + 1][tj] != 2) {
+                map[down] = dis;
+                if (grid[ti + 1][tj] == 0) {
+                    queue.add(down);
+                }
+                if (grid[ti + 1][tj] == 1) {
+                    sum += dis;
+                    count++;
+                }
             }
             
-            pos = (i + 1) * n + j;
-            if (i + 1 < m && grid[i + 1][j] != 2 && !visited[pos]) {
-                visited[pos] = true;
-                queue.add(new Step(pos, top.dis + 1));
+            int left = ti * n + tj - 1;
+            if (tj - 1 >= 0 && map[left] == -1 && grid[ti][tj - 1] != 2) {
+                map[left] = dis;
+                if (grid[ti][tj - 1] == 0) {
+                    queue.add(left);
+                }
+                if (grid[ti][tj - 1] == 1) {
+                    sum += dis;
+                    count++;
+                }
             }
             
-            pos = i * n + j - 1;
-            if (j - 1 >= 0 && grid[i][j - 1] != 2 && !visited[pos]) {
-                visited[pos] = true;
-                queue.add(new Step(pos, top.dis + 1));
-            }
-            
-            pos = i * n + j + 1;
-            if (j + 1 < n && grid[i][j + 1] != 2 && !visited[pos]) {
-                visited[pos] = true;
-                queue.add(new Step(pos, top.dis + 1));
+            int right = ti * n + tj + 1;
+            if (tj + 1 < n && map[right] == -1 && grid[ti][tj + 1] != 2) {
+                map[right] = dis;
+                if (grid[ti][tj + 1] == 0) {
+                    queue.add(right);
+                }
+                if (grid[ti][tj + 1] == 1) {
+                    sum += dis;
+                    count++;
+                }
             }
         }
         
-        if (cnt == count) {
-            return len;
-        } else {
-            return Integer.MAX_VALUE;
-        }
+        return count != num ? Integer.MAX_VALUE : sum;
     }
 }

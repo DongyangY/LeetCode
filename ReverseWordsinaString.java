@@ -1,17 +1,24 @@
 public class Solution {
-    
-    // Two-pass solution
     public String reverseWords(String s) {
-        StringBuilder reversed = new StringBuilder();
-        int j = s.length();
-        for (int i = s.length() - 1; i >=0; i--) {
+        if (s == null) return null;
+        boolean isSpace = false;
+        StringBuilder sb = new StringBuilder();
+        for (int i = s.length() - 1; i >= 0; i--) {
             if (s.charAt(i) == ' ') {
-                j = i;
-            } else if (i == 0 || s.charAt(i - 1) == ' ') {
-                if (reversed.length() != 0) reversed.append(' ');
-                reversed.append(s.substring(i, j));
+                if (!isSpace) {
+                    sb.append(' ');
+                    isSpace = true;
+                }
+            } else {
+                isSpace = false;
+                int j = i;
+                while (j >= 0 && s.charAt(j) != ' ') j--;
+                sb.append(s.substring(j + 1, i + 1));
+                i = j + 1;
             }
         }
-        return reversed.toString();
+        if (sb.length() > 0 && sb.charAt(0) == ' ') sb.deleteCharAt(0);
+        if (sb.length() > 0 && sb.charAt(sb.length() - 1) == ' ') sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
     }
 }
